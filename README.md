@@ -71,7 +71,17 @@ A number of PCBs have been designed in KiCAD. This repository just holds the fir
 
 Please see these other repositories for PCB designs:
 
+### RS485 sensor interface
 
+[https://github.com/curiouselectric/RS485InterfaceBoard](https://github.com/curiouselectric/RS485InterfaceBoard)
+
+### Wind measurement sensor interface (speed and direction)
+
+[https://github.com/curiouselectric/WindSensor](https://github.com/curiouselectric/WindSensor)
+
+### Irradiance (solar) sensor (DIY version)
+
+[https://github.com/curiouselectric/SolarSensor](https://github.com/curiouselectric/SolarSensor)
 
 
 ## Board ID Number
@@ -368,10 +378,13 @@ The serial port will show then next direction and will got N, NE, E, SE, S, SW, 
 
 The unit will also send "aaI0WVOK=NW" + CRC +"#" to report back which direction the unit is now being trained.
 
-When it ends this data is stored within the unit and the direction 'bands' are recaluclated.
+When it ends this data is stored within the unit and the direction 'bands' are recalculated.
+
+## 'DC' RS485 DC Power Sensor
+
+There are no extra commands.
+
+Voltage, Current, Power and cumulative Energy are monitored.
 
 
-# Overview of Connections
-
-To Do - Update with new PCB version wiring diagram
 
