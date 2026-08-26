@@ -47,7 +47,7 @@ It runs on an ATMega328 running at 16MHz with selectable baud serial (up to 5760
 
 ## Sensor Types
 
-There are a huge range of RS485 sensors for many different variables. I'd like this unit to be adaptable to work with a variety of sensors with minila code changes.
+There are a huge range of RS485 sensors for many different variables. I'd like this unit to be adaptable to work with a variety of sensors with minimal code changes.
 
 This code base also works with other, non-RS485 sensors, such as wind speed sensors, wind vanes and solar irradiance sensors.
 
@@ -160,9 +160,9 @@ If the unit is in broadcast mode then the minimum and maximum wind speeds and th
 
 ## What is baud rate?:
 
-Request: "aaI0STBD?#" ("aaI0BD?dc#" with CRC)
+Request: "aaI0BD?#" ("aaI0BD?dc#" with CRC)
 
-Returns: "aI0CHBD9600?^^#"  // Where 9600 is the baud rate 
+Returns: "aI0BD9600?^^#"  // Where 9600 is the baud rate 
 
 ## Set Baud Rate:
 
@@ -304,10 +304,9 @@ They are listed here.
 
 There are no extra commands.
 
-## 'PY' RS485 Pyrnanometer Irradiance Sensor
+## 'PY' RS485 Pyranometer Irradiance Sensor
 
 There are no extra commands.
-
 
 ## 'WS' Wind Speed Sensor (Vane and Anemometer)
 
