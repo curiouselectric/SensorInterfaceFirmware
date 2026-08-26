@@ -62,20 +62,17 @@ Wind Sensor (speed & direction)    |         |1.3       | WT           |        
 RS485 Pyranometer Irradiance Sensor| PYR20    |1.4         | PY           |PYR20              |[https://www.aliexpress.com/item/1005002999915991.html](https://www.aliexpress.com/item/1005002999915991.html) |              |
 DIY Irradiance Sensor              |         |          | IR           |                |     |     |
 PAR Sensor                         |         |          | PR           |                |     |     |
-Air Temperature/Humidity/Pressure  |         |1.3       | not needed    |AHT20 / BMP280 | [https://www.aliexpress.com/item/1005004460907148.html](https://www.aliexpress.com/item/1005004460907148.html) | This is an I2C add-on|
-DC Power Sensor (Peacefair)        |PZEM-003         |1.5       | DC           |PZEM-003        |[https://www.aliexpress.com/store/1773456/pages/all-items.html](https://www.aliexpress.com/store/1773456/pages/all-items.html)     |     |
+Air Temperature/ Humidity/ Pressure  |         |1.3       | not needed    |AHT20 / BMP280 | [https://www.aliexpress.com/item/1005004460907148.html](https://www.aliexpress.com/item/1005004460907148.html) | This is an I2C add-on|
+DC Power Sensor             |PZEM-003         |1.5       | DC           |PZEM-003        |[https://www.aliexpress.com/store/1773456/pages/all-items.html](https://www.aliexpress.com/store/1773456/pages/all-items.html)     |     |
 
 # Hardware
 
-A number of PCBs have been designed in KiCAD. This repository holds the RS485 sensor and is available here. A small PCB has been designed.
+A number of PCBs have been designed in KiCAD. This repository just holds the firmware.
 
-There is one reset switch, one user input switch and one LED output. 
+Please see these other repositories for PCB designs:
 
-There is a step-up DC-DC converter with power control (to power higher voltage sensors). 
 
-There is a TTL to RS485 converter (to connect to the RS485 sensors)
 
-There is a 4 pin 'Grove'-type connector for direct connection I2C (code for this is not yet implemented) 
 
 ## Board ID Number
 
@@ -83,7 +80,7 @@ Each unit can have a unique ID (using a push link 6 pin pad for 0-7 values), so 
 
 ## PCB User Switch and User LED
 
-There is one user switch and one user LED on the unit.
+There is typically one user switch and one user LED on the unit.
 
 The LED will show a regular flash every 5 seconds. This will briefly flash once every 5 seconds if the unit is in 'Response' mode. The LED will briefly flash twice every 5 seconds if the unit is in 'Broadcast' mode. Data will be sent at the broadcast rate.
 
