@@ -1,6 +1,6 @@
-# Sensor Interface Board
+# Sensor Interface Firmware
 
-A unit to interface various sensors (digital/analog/RS485) with a simple serial interface via an ATMega328-based circuit. The unit also provides averaged data, controlled stepped-up supply voltage and a field-adjustable ID.
+A repository to hold firmware to interface various sensors (digital/analog/RS485) with a simple serial interface via an ATMega328-based circuit. The firmware can be used on various PCBs (supplied by the Curious Electric Company) to provide averaged data, controlled stepped-up supply voltage and a field-adjustable ID.
 
 "Why do you need that?", you ask.... 
 
@@ -14,13 +14,13 @@ I was also concerned with energy consumption (my project was battery based). If 
 
 The problem with measuring sensors with values that change relatively quickly is that they constantly need to be checked. This requires a bit of microcontroller time and processing. This unit is designed to solve that.
 
-Wire up your RS485 sensor. Power the unit up. Then it will save the averaged data for you. You can then get hold of the data through serial requests and process as you need.
+Wire up your sensor. Power the unit up. Then it will save the averaged data for you. You can then get hold of the data through serial requests and process as you need.
 
 ![Overview](https://github.com/curiouselectric/SensorInterfaceBoard/blob/1cc6fdd7eef303f40e9d5f870216e7cde911cf6a/RS485%20Interface%20Board%20Instructions/Images/Sensor%20Interface%20overview.png)
 
-I wrote this to interface to an ESP32 data logger, which sleeps most of the time. It wakes up, talks to the RS485 sensor, gets the data it needs, then goes back to sleep, knowing the RS485 Interface Board is always monitoring.
+I wrote this firmware to interface to an ESP32 data logger, which sleeps most of the time. It wakes up, talks to the sensor, gets the data it needs, then goes back to sleep, knowing the sensor is always monitoring.
 
-It was designed as a relatively simple interface to remove the need for monitoring pulses/dealing with RS485 requests/getting sensor data and averaging the sensor data.
+It was designed as firmware to remove the need for monitoring pulses/dealing with RS485 requests/getting sensor data and averaging the sensor data.
 
 The brilliant [ESPHome project](https://esphome.io/components/#environmental) has loads of sensor types you can interafce easily with a low cost ESP microcontrollers. For systems that have WiFi and good power connections then that project is a good resource to use. This project is designed for very low power systems (battery based datalogging) and for situations where easy access to Wi-Fi is not available.
 
@@ -52,6 +52,7 @@ There are a huge range of RS485 sensors for many different variables. I'd like t
 This code base also works with other, non-RS485 sensors, such as wind speed sensors, wind vanes and solar irradiance sensors.
 
 ## Sensors Implemented:
+
 This is a list of the sensor types which have been implemented with this software, Along with the version number they were added.
 
 Sensor Name                        |  Ref    |  Version | Device Type  |   ID                   | Link                                                 | Notes  |
@@ -61,8 +62,8 @@ Wind Sensor (speed & direction)    |         |1.3       | WT           |        
 RS485 Pyranometer Irradiance Sensor| PYR20    |1.4         | PY           |PYR20              |[https://www.aliexpress.com/item/1005002999915991.html](https://www.aliexpress.com/item/1005002999915991.html) |              |
 DIY Irradiance Sensor              |         |          | IR           |                |     |     |
 PAR Sensor                         |         |          | PR           |                |     |     |
-Air Temperature/Humidity/Pressure  |         |1.3       | not needed    |AHT20 / BMP280 | [https://www.aliexpress.com/item/1005004460907148.html](https://www.aliexpress.com/item/1005004460907148.html) | This adds onto the PCB along with a sensor above|
-
+Air Temperature/Humidity/Pressure  |         |1.3       | not needed    |AHT20 / BMP280 | [https://www.aliexpress.com/item/1005004460907148.html](https://www.aliexpress.com/item/1005004460907148.html) | This is an I2C add-on|
+DC Power Sensor (Peacefair)        |PZEM-003         |1.5       | DC           |PZEM-003        |[https://www.aliexpress.com/store/1773456/pages/all-items.html](https://www.aliexpress.com/store/1773456/pages/all-items.html)     |     |
 
 # Hardware
 
