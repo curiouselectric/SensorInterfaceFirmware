@@ -63,7 +63,10 @@ RS485 Pyranometer Irradiance Sensor| PYR20    |1.4         | PY           |PYR20
 DIY Irradiance Sensor              |         |          | IR           |                |     |     |
 PAR Sensor                         |         |          | PR           |                |     |     |
 Air Temperature/ Humidity/ Pressure  |         |1.3       | not needed    |AHT20 / BMP280 | [https://www.aliexpress.com/item/1005004460907148.html](https://www.aliexpress.com/item/1005004460907148.html) | This is an I2C add-on|
-DC Power Sensor             |PZEM-003         |1.5       | DC           |PZEM-003        |[https://www.aliexpress.com/store/1773456/pages/all-items.html](https://www.aliexpress.com/store/1773456/pages/all-items.html)     |     |
+DC Power Sensor             |PZEM-003 and PZEM-017        |1.5       | DC           |PZEM-003 and PZEM-017       |[https://www.aliexpress.com/store/1773456/pages/all-items.html](https://www.aliexpress.com/store/1773456/pages/all-items.html)     |     |
+
+
+
 
 # Hardware
 
