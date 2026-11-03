@@ -4,7 +4,7 @@ A repository to hold firmware to interface various sensors (digital/analog/RS485
 
 "Why do you need that?", you ask.... 
 
-I had been wanting to use an industrial soil mositure sensor for a simple project. This device was only available as an RS3485 device. So I ordered that - it then took days of head scratching to sort basic communication with the device. This unit is meant to simplify reading of avaeraged data from RS485 sensors and make it easy to get that data into your project via a simple serial request/reply set of commands.
+I had been wanting to use an industrial soil mositure sensor for a simple project. This device was only available as an RS485 device. So I ordered that - it then took days of head scratching to sort basic communication with the device. This unit is meant to simplify reading of avaeraged data from RS485 sensors and make it easy to get that data into your project via a simple serial request/reply set of commands.
 
 The other issue with a lot of the RS485 sensor is that they need higher voltages supplied (such as 12V or even 24V DC). So on this interface board I added a DC-DC step up converter to power the sensor. 
 
@@ -58,12 +58,13 @@ This is a list of the sensor types which have been implemented with this softwar
 Sensor Name                        |  Ref    |  Version | Device Type  |   ID                   | Link                                                 | Notes  |
 -----------------------------------|---------|----------|--------------|------------------------|------------------------------------------------------|--------|
 Soil Temperature & Humidity        |ZTS-3000 |1.0       | SM           |ZTS-3000-TR-WS-N01     |[https://www.curiouselectric.co.uk/products/soil-moisture-sensor](https://www.curiouselectric.co.uk/products/soil-moisture-sensor) |     |
-Wind Sensor (speed & direction)    |         |1.3       | WT           |                         |[https://www.curiouselectric.co.uk/collections/monitoring/products/wind-sensor-interface](https://www.curiouselectric.co.uk/collections/monitoring/products/wind-sensor-interface)  | Works with Anemometer and Wind Vane | 
+Wind Sensor (speed & direction)    |         |1.3       | WS           |                         |[https://www.curiouselectric.co.uk/collections/monitoring/products/wind-sensor-interface](https://www.curiouselectric.co.uk/collections/monitoring/products/wind-sensor-interface)  | Works with Anemometer and Wind Vane | 
 RS485 Pyranometer Irradiance Sensor| PYR20    |1.4         | PY           |PYR20              |[https://www.aliexpress.com/item/1005002999915991.html](https://www.aliexpress.com/item/1005002999915991.html) |              |
 DIY Irradiance Sensor              |         |          | IR           |                |     |     |
 PAR Sensor                         |         |          | PR           |                |     |     |
 Air Temperature/ Humidity/ Pressure  |         |1.3       | not needed    |AHT20 / BMP280 | [https://www.aliexpress.com/item/1005004460907148.html](https://www.aliexpress.com/item/1005004460907148.html) | This is an I2C add-on|
-DC Power Sensor             |PZEM-003         |1.5       | DC           |PZEM-003        |[https://www.aliexpress.com/store/1773456/pages/all-items.html](https://www.aliexpress.com/store/1773456/pages/all-items.html)     |     |
+DC Power Sensor             |PZEM-003 and PZEM-017        |1.5       | DC           |PZEM-003 and PZEM-017       |[https://www.aliexpress.com/store/1773456/pages/all-items.html](https://www.aliexpress.com/store/1773456/pages/all-items.html)     |     |
+
 
 # Hardware
 
@@ -88,23 +89,31 @@ Please see these other repositories for PCB designs:
 
 Each unit can have a unique ID (using a push link 6 pin pad for 0-7 values), so multiple units can be added to a serial bus, if needed. The defalt is 0 (no links used).
 
-## PCB User Switch and User LED
+## PCB User Switch, Reset Switch and User LED
 
-There is typically one user switch and one user LED on the unit.
+There is one user switch (SWA), one reset switch (RST) and one user LED (LED0) on the unit.
 
-The LED will show a regular flash every 5 seconds. This will briefly flash once every 5 seconds if the unit is in 'Response' mode. The LED will briefly flash twice every 5 seconds if the unit is in 'Broadcast' mode. Data will be sent at the broadcast rate.
+### The reset switch
+
+The reset switch will do a full reset of the microcontroller. Any wind data (the 1s, 10s, 60s, 10min and 60min data) recorded will be lost. (Note: Any calibration or conversion data is stored in EEPROM and will not be lost).
+
+### The user LED
+
+The LED will show a regular flash every 5 seconds. This will briefly flash once every 5 seconds if the unit is in 'Response' mode. The LED will briefyl flash twice every 5 seconds if the unit is in 'Broadcast' mode. Data will be sent at the broadcast rate.
 
 The LED will also flash whenever data is sent of the serial port. The LED will go on before data sent and then off after data is sent.
 
-Pressing the user switch for >0.5 seconds and then releasing will result in a switch press.
+### The user switch
 
-A switch press will increment the mode from 0-1-2-3-4-5 then back to 0.
+Pressing the user switch for >0.5 seconds and then releasing will result in a switch press. 
 
-The unit will flash after a button press to indicate the broadcast mode (so 0 flashes if the value is 0, 1 flash if the value is 1 etc).
+A switch press will increment the mode from 0-1-2-3-4-5 then back to 0. 
 
-If this is set to 5 then the unit works in 'Response' mode.
+The unit will flash after a button press to indicate the broadcast mode (so 0 flashes if the value is 0, 1 flash if the value is 1 etc). 
 
-If this is set to 0-4 then the unit is in 'Broadcast' mode and will send the data at the relevant interval (0 = 1s, 1 = 10s, 2 = 1 min, 3 = 10 min and 4 = 1 hour).
+If this is set to 5 then the unit works in 'Response' mode. 
+
+If this is set to 0-4 then the unit is in broadcast mode and will send the data at the relevant interval (0 = 1s, 1 = 10s, 2 = 1 min, 3 = 10 min and 4 = 1 hour). 
 
 The mode can also be set with a serial request, using the "Set the unit to broadcast:" method (see below).
 
@@ -149,7 +158,9 @@ You can then upload code using the 6pin serial/FTDI interface on the board.
 
 # Serial Data and Commands
 
-It returns the average values and information when requested on serial port.
+This firmware returns the average sensor values and information when requested on serial port as per the request below.
+
+The requests are designed to be sent with just a new line at the end of a request, but either 'new line' or 'new line and carriage return' will both work (the carriage return will be ignored). So on the Arduino serial monitor you can choose 'New Line' or 'Both NL & CR' as the line ending.
 
 If the 8-bit CRC (Cyclic Redundancy Check) is used then each request must have a 2 char CRC added between the ? and # within these commands (labelled ^^ here).
 For the responses, if no CRC enabled then the ?^^ within these commands is NOT returned. You must use the ? for a command, but the response will not contain it.
@@ -203,29 +214,39 @@ Request: "aaI*ID?^^#"  The * value can be anything.
 
 Returns: "aaIXID:X?^^#"   // Where X is the device ID + CRC if requested
 
-## Request Data from ONE channel
+## Request Data from ONE sensor parameter (including max and min):
 
-Request: “aaI0R00A*?^^#” where 00 is the channel number (00, 01 etc) and * is the averaging period (* = 0 for 1 sec data, 1 for 10 sec data, 2 for 60 sec (1 min) data, 3 for 600 sec (10 min) data and 4 for 3600 sec (1 hr) data 
+This firmware has been designed to read different sensors, including some sensors which have two or more different parameters (such as temperature, humidity and pressure). To do this each parameter is stored on a 'channel'. The number of channels and data returned will depend upon the sensor type. For example the soil moisture and temperature sensor will use channel 00 for the moisture reading and channel 01 for the temperature.
+
+(Note: For the wind interface sensor is a special case the the wind speed and wind direction will both be returned, along with the maximum and minimum wind speeds).
+
+You can either read from one sensor parameter, as shown here, or get all sensor parameters returned in one call (as pre the request below 'Request Data from ALL sensor parameters').
+
+Request: “aaI0R00A*?^^#” where 00 is the sensor parameter (00, 01 etc) and * is the averaging period (* = 0 for 1 sec data, 1 for 10 sec data, 2 for 60 sec (1 min) data, 3 for 600 sec (10 min) data and 4 for 3600 sec (1 hr) data 
 
 Returns:  "aaI0R00A*:123.40:123.40:123.40?^^#"  // This wil return the average data then : then the minimum value then : then the maxximum value.
 
-## Request Data from ALL channels
+## Request Data from ALL sensor parameters (NOT including max and min):
+
+This will return all the sensor parameter data for the averaging period requested. 
+
+(Note: For the wind interface sensor is a special case the the wind speed and wind direction will both be returned, WITHOUT the maximum and minimum wind speeds).
 
 Request: “aaI0RAAA3?^^#”
 
-Returns: "aaI0RAAA1:123.40:567.80?^^#" where the first item of data is channel 0, the next is channel 1. This will depend upon the number of channels.
+Returns: "aaI0RAAA1:123.40:567.80?^^#" where the first item of data is sensor parameter 00, the next is sensor parameter 01 etc. This will depend upon the number of sensor parameters.
 
-## Request ALL Minimum data
+## Request ALL Minimum data:
 
 Request: “aaI0RMNA4?^^#”  - does not matter what averaging period. min/max are just the min/max seen at max data rate.
 
-Returns: "aaI0RMN:123.40:567.80?^^#"  where the first item of data is channel 0, the next is channel 1. This will depend upon the number of channels.
+Returns: "aaI0RMN:123.40:567.80?^^#"  where the first item of data is sensor parameter 00, the next is sensor parameter 01. This will depend upon the number of sensor parameters.
 
-## Request ALL Maximum data
+## Request ALL Maximum data:
 
 Request: “aaI0RMXA0?^^#”  - does not matter what averaging period. min/max are just the min/max seen at max data rate.
 
-Returns: "aaI0RMX:123.40:567.80?^^#"  where the first item of data is channel 0, the next is channel 1. This will depend upon the number of channels.
+Returns: "aaI0RMX:123.40:567.80?^^#"  where the first item of data is sensor parameter 00, the next is sensor parameter 01. This will depend upon the number of sensor parameters.
 
 ## Reset the Min and Max value:
 
@@ -235,7 +256,7 @@ Request: "aaI0RESET?#" ("aaI0RESET?d9#" with CRC)
 
 Returns: "aaI0RSTOK#"
 
-## Request Temperature, Humidity and Pressure Data
+## Request Temperature, Humidity and Pressure Data:
 
 This command can only be used if the I2C AHT20/BMP280 sensor is attached and has been defined in the code. Otherwise it will return an error.
 
@@ -248,7 +269,7 @@ Request: "aaI0TEMP?^^#"  (^^ for the CRC)
 Returns: "aaI0T$$.$$H$$.$P$$$$$$?^^#" (^^ for the CRC) and $$$ are the values (floats) for Temeprature in C and Reltive Humidity in % and Air Pressure in Pa.
 Returns: "aaI0T-H-P-#" if the board is not connected or there is an issue wth one of the sensors.
 
-## Serial 'Button' press
+## Serial 'Button' press:
 
 You can simulate a button press with a serial command. This might be useful for some logging applications
 
@@ -292,9 +313,9 @@ You can use this online calculator to check your CRC: https://crccalc.com/ The t
 
 ## Failure codes:
 
-If data is not that length or does not have 'aa' and '#' at start/end then return with send "aaFAIL\*\*#" error code. All will have CRC on these codes, if requested.
+If data is not the correct length, does not have a new line (NL) on the end or does not have 'aa' and '#' at start/end then return with send "aaFAIL\*\*#" error code. All will have CRC on these codes, if requested.
 
-+ "aaFAILCRC?^^#": CRC check fail
++  "aaFAILCRC?^^#": CRC check fail
 +  "aaFAILTL?^^#": String too long
 +  "aaFAILID?^^#": Problem with ID
 +  "aaFAILIDX?^^#": ID not correct to device
@@ -305,7 +326,7 @@ If data is not that length or does not have 'aa' and '#' at start/end then retur
 
 
 # Sensor Specific Commands
-For each sensor type there are additional commands. These are only available if the unit is in the correct mode.
+For each sensor type there are additional commands. These are only available for the relative sensor option has been defined in the config.h file of the firmwre. For example if the "#define WIND_SENSOR" has been set then this is for the Wind Speed and Vane sensor.
 They are listed here.
 
 ## 'SM' RS485 Soil Mositure Sensor
@@ -320,39 +341,39 @@ There are no extra commands.
 
 ### Wind Speed data:
 
-Request: “aaI0WSA4#”  ("aaI0WSA4?19#" with CRC)  Where 0 is an ID from 0-7 set by solder on PCB. 4 is the averaging period (0=1s, 1=10s, 2 = 60s, 3 = 600s, 4=3600s)
+Request: “aaI0WSA4?#”  ("aaI0WSA4?19#" with CRC)  Where 0 is an ID from 0-7 set by solder on PCB. 4 is the averaging period (0=1s, 1=10s, 2 = 60s, 3 = 600s, 4=3600s)
 
 Returns: "aaI0WSA4:3.00:5.67:1.23#"  // Where 4 is the averaging period, 3.00 is the data within the averaging period, 5.67 is the maximum and 1.23 is the minimum.
 
 ### Wind Speed data minimum:
 
-Request: “aaI0RMN#” ("aaI0RMN?^^#" with CRC) - does not matter what averaging period. min/max are just the min/max seen.
+Request: “aaI0RMN?#” ("aaI0RMN?^^#" with CRC) - does not matter what averaging period. min/max are just the min/max seen.
 
 Returns: "aaI0RMN:3.00#"  // Where 3.00 is the data + CRC if requested
 
 ### Wind Speed data maximum:
 
-Request: “aaI0RMX#”  ("aaI0RMX?^^#" with CRC) - does not matter what averaging period. min/max are just the min/max seen.
+Request: “aaI0RMX?#”  ("aaI0RMX?^^#" with CRC) - does not matter what averaging period. min/max are just the min/max seen.
 
 Returns: "aaI0RMX:3.00#"  // Where 3.00 is the data + CRC if requested
 
 ### What is Anemometer conversion?:
 
-Request: "aaI0WSCON#" ("aaI0WSCON?41#" with CRC)
+Request: "aaI0WSCON?#" ("aaI0WSCON?41#" with CRC)
 
 Returns: "aaI0STWSCONm123.4c567.89#" (from stored values) + CRC if requested
 
 ### Set the Anemometer conversion:
 
-Request: "aaI0WSSTm123.4c567.89#"  ("aaI0WSSTm123.4c567.89?38#" with CRC) Where 123.4 is the gradient and 567.89 is the constant (y=mx+c)
+Request: "aaI0WSSTm123.4c567.89?#"  ("aaI0WSSTm123.4c567.89?38#" with CRC) Where 123.4 is the gradient and 567.89 is the constant (y=mx+c)
 
 Returns: "aaI0STWSSETm123.4c567.89#" (set to the new values) + CRC if requested
 
-Request: "aaI0WSSTm1c0#" or "aaI0WSSTm1c0?da#" with CRC to set m= 1 and c=0. This is useful for initial testing.
+Request: "aaI0WSSTm1c0?#" or "aaI0WSSTm1c0?da#" with CRC to set m= 1 and c=0. This is useful for initial testing.
 
 ### Wind Vane data:
 
-Request: “aaI0WV#”  ("aaI0WV?b4#" with CRC) Where 0 is an ID from 0-7 set by solder on PCB.
+Request: “aaI0WV?#”  ("aaI0WV?b4#" with CRC) Where 0 is an ID from 0-7 set by solder on PCB.
 
 Returns:    The instantaneuous direction AND the direction array data
 
@@ -360,7 +381,7 @@ Returns:    "aaI0WV=W:0.00:0.00:0.00:0.00:0.00:0.00:62.00:0.00#" + CRC if reques
 
 ### Reset the max, min and wind vane array:
 
-Request: "aaI0RESET#" ("aaI0RESET?d9#" with CRC)
+Request: "aaI0RESET?#" ("aaI0RESET?d9#" with CRC)
 
 Returns: "aaRESET#"
 
