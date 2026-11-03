@@ -212,11 +212,11 @@ Request: "aaI*ID?^^#"  The * value can be anything.
 
 Returns: "aaIXID:X?^^#"   // Where X is the device ID + CRC if requested
 
-## Request Data from ONE sensor parameter
+## Request Data from ONE sensor parameter (including max and min)
 
 This firmware has been designed to read different sensors, including some sensors which have two or more different parameters (such as temperature, humidity and pressure). To do this each parameter is stored on a 'channel'. The number of channels and data returned will depend upon the sensor type. For example the soil moisture and temperature sensor will use channel 00 for the moisture reading and channel 01 for the temperature.
 
-(Note: For the wind interface sensor is a special case the the wind speed and wind direction must be requested with the commands specified in the Sensor Specific Commands section).
+(Note: For the wind interface sensor is a special case the the wind speed and wind direction will both be returned, along with the maximum and minimum wind speeds).
 
 You can either read from one sensor parameter, as shown here, or get all sensor parameters returned in one call (as pre the request below 'Request Data from ALL sensor parameters').
 
@@ -224,11 +224,11 @@ Request: “aaI0R00A*?^^#” where 00 is the sensor parameter (00, 01 etc) and *
 
 Returns:  "aaI0R00A*:123.40:123.40:123.40?^^#"  // This wil return the average data then : then the minimum value then : then the maxximum value.
 
-## Request Data from ALL sensor parameters
+## Request Data from ALL sensor parameters (NOT including max and min)
 
 This will return all the sensor parameter data for the averaging period requested. 
 
-(Note: For the wind interface sensor is a special case the the wind speed and wind direction must be requested with the commands specified in the Sensor Specific Commands section).
+(Note: For the wind interface sensor is a special case the the wind speed and wind direction will both be returned, WITHOUT the maximum and minimum wind speeds).
 
 Request: “aaI0RAAA3?^^#”
 
