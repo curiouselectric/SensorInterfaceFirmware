@@ -158,7 +158,9 @@ You can then upload code using the 6pin serial/FTDI interface on the board.
 
 # Serial Data and Commands
 
-It returns the average values and information when requested on serial port.
+This firmware returns the average sensor values and information when requested on serial port as per the request below.
+
+The requests are designed to be sent with just a new line at the end of a request, but either 'new line' or 'new line and carriage return' will both work (the carriage return will be ignored). So on the Arduino serial monitor you can choose 'New Line' or 'Both NL & CR' as the line ending.
 
 If the 8-bit CRC (Cyclic Redundancy Check) is used then each request must have a 2 char CRC added between the ? and # within these commands (labelled ^^ here).
 For the responses, if no CRC enabled then the ?^^ within these commands is NOT returned. You must use the ? for a command, but the response will not contain it.
