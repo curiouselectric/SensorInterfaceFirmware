@@ -402,7 +402,7 @@ void t1SCallback() {
 
     if (checkData.send_sensor_data == 0) {
       sendData(0);
-      reset_data();
+      //reset_data();
     }
 
     // Every second we recheck the bits of the UNIT_ID
@@ -428,7 +428,7 @@ void t10SCallback() {
 
     if (checkData.send_sensor_data == 1) {
       sendData(1);
-      reset_data();
+      //reset_data();
     }
     data_counter_60s++;
     data_counter_10s = 0;
@@ -452,7 +452,7 @@ void t60SCallback() {
     // Here we want to check if we are regularly sending the data and send if needed:
     if (checkData.send_sensor_data == 2) {
       sendData(2);
-      reset_data();
+      //reset_data();
     }
     data_counter_600s++;
     data_counter_60s = 0;
@@ -477,7 +477,7 @@ void t600SCallback() {
     // Here we want to check if we are regularly sending the data and send if needed:
     if (checkData.send_sensor_data == 3) {
       sendData(3);
-      reset_data();
+      //reset_data();
     }
   }
   data_counter_3600s++;
@@ -502,7 +502,7 @@ void t3600SCallback() {
     // Here we want to check if we are regularly sending the data and send if needed:
     if (checkData.send_sensor_data == 4) {
       sendData(4);
-      reset_data();
+      //reset_data();
     }
   }
   data_counter_3600s = 0;
