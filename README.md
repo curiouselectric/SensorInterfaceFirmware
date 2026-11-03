@@ -58,7 +58,7 @@ This is a list of the sensor types which have been implemented with this softwar
 Sensor Name                        |  Ref    |  Version | Device Type  |   ID                   | Link                                                 | Notes  |
 -----------------------------------|---------|----------|--------------|------------------------|------------------------------------------------------|--------|
 Soil Temperature & Humidity        |ZTS-3000 |1.0       | SM           |ZTS-3000-TR-WS-N01     |[https://www.curiouselectric.co.uk/products/soil-moisture-sensor](https://www.curiouselectric.co.uk/products/soil-moisture-sensor) |     |
-Wind Sensor (speed & direction)    |         |1.3       | WT           |                         |[https://www.curiouselectric.co.uk/collections/monitoring/products/wind-sensor-interface](https://www.curiouselectric.co.uk/collections/monitoring/products/wind-sensor-interface)  | Works with Anemometer and Wind Vane | 
+Wind Sensor (speed & direction)    |         |1.3       | WS           |                         |[https://www.curiouselectric.co.uk/collections/monitoring/products/wind-sensor-interface](https://www.curiouselectric.co.uk/collections/monitoring/products/wind-sensor-interface)  | Works with Anemometer and Wind Vane | 
 RS485 Pyranometer Irradiance Sensor| PYR20    |1.4         | PY           |PYR20              |[https://www.aliexpress.com/item/1005002999915991.html](https://www.aliexpress.com/item/1005002999915991.html) |              |
 DIY Irradiance Sensor              |         |          | IR           |                |     |     |
 PAR Sensor                         |         |          | PR           |                |     |     |
@@ -323,39 +323,39 @@ There are no extra commands.
 
 ### Wind Speed data:
 
-Request: “aaI0WSA4#”  ("aaI0WSA4?19#" with CRC)  Where 0 is an ID from 0-7 set by solder on PCB. 4 is the averaging period (0=1s, 1=10s, 2 = 60s, 3 = 600s, 4=3600s)
+Request: “aaI0WSA4?#”  ("aaI0WSA4?19#" with CRC)  Where 0 is an ID from 0-7 set by solder on PCB. 4 is the averaging period (0=1s, 1=10s, 2 = 60s, 3 = 600s, 4=3600s)
 
 Returns: "aaI0WSA4:3.00:5.67:1.23#"  // Where 4 is the averaging period, 3.00 is the data within the averaging period, 5.67 is the maximum and 1.23 is the minimum.
 
 ### Wind Speed data minimum:
 
-Request: “aaI0RMN#” ("aaI0RMN?^^#" with CRC) - does not matter what averaging period. min/max are just the min/max seen.
+Request: “aaI0RMN?#” ("aaI0RMN?^^#" with CRC) - does not matter what averaging period. min/max are just the min/max seen.
 
 Returns: "aaI0RMN:3.00#"  // Where 3.00 is the data + CRC if requested
 
 ### Wind Speed data maximum:
 
-Request: “aaI0RMX#”  ("aaI0RMX?^^#" with CRC) - does not matter what averaging period. min/max are just the min/max seen.
+Request: “aaI0RMX?#”  ("aaI0RMX?^^#" with CRC) - does not matter what averaging period. min/max are just the min/max seen.
 
 Returns: "aaI0RMX:3.00#"  // Where 3.00 is the data + CRC if requested
 
 ### What is Anemometer conversion?:
 
-Request: "aaI0WSCON#" ("aaI0WSCON?41#" with CRC)
+Request: "aaI0WSCON?#" ("aaI0WSCON?41#" with CRC)
 
 Returns: "aaI0STWSCONm123.4c567.89#" (from stored values) + CRC if requested
 
 ### Set the Anemometer conversion:
 
-Request: "aaI0WSSTm123.4c567.89#"  ("aaI0WSSTm123.4c567.89?38#" with CRC) Where 123.4 is the gradient and 567.89 is the constant (y=mx+c)
+Request: "aaI0WSSTm123.4c567.89?#"  ("aaI0WSSTm123.4c567.89?38#" with CRC) Where 123.4 is the gradient and 567.89 is the constant (y=mx+c)
 
 Returns: "aaI0STWSSETm123.4c567.89#" (set to the new values) + CRC if requested
 
-Request: "aaI0WSSTm1c0#" or "aaI0WSSTm1c0?da#" with CRC to set m= 1 and c=0. This is useful for initial testing.
+Request: "aaI0WSSTm1c0?#" or "aaI0WSSTm1c0?da#" with CRC to set m= 1 and c=0. This is useful for initial testing.
 
 ### Wind Vane data:
 
-Request: “aaI0WV#”  ("aaI0WV?b4#" with CRC) Where 0 is an ID from 0-7 set by solder on PCB.
+Request: “aaI0WV?#”  ("aaI0WV?b4#" with CRC) Where 0 is an ID from 0-7 set by solder on PCB.
 
 Returns:    The instantaneuous direction AND the direction array data
 
@@ -363,7 +363,7 @@ Returns:    "aaI0WV=W:0.00:0.00:0.00:0.00:0.00:0.00:62.00:0.00#" + CRC if reques
 
 ### Reset the max, min and wind vane array:
 
-Request: "aaI0RESET#" ("aaI0RESET?d9#" with CRC)
+Request: "aaI0RESET?#" ("aaI0RESET?d9#" with CRC)
 
 Returns: "aaRESET#"
 
