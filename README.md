@@ -66,8 +66,6 @@ Air Temperature/ Humidity/ Pressure  |         |1.3       | not needed    |AHT20
 DC Power Sensor             |PZEM-003 and PZEM-017        |1.5       | DC           |PZEM-003 and PZEM-017       |[https://www.aliexpress.com/store/1773456/pages/all-items.html](https://www.aliexpress.com/store/1773456/pages/all-items.html)     |     |
 
 
-
-
 # Hardware
 
 A number of PCBs have been designed in KiCAD. This repository just holds the firmware.
@@ -214,29 +212,39 @@ Request: "aaI*ID?^^#"  The * value can be anything.
 
 Returns: "aaIXID:X?^^#"   // Where X is the device ID + CRC if requested
 
-## Request Data from ONE channel
+## Request Data from ONE sensor parameter
 
-Request: “aaI0R00A*?^^#” where 00 is the channel number (00, 01 etc) and * is the averaging period (* = 0 for 1 sec data, 1 for 10 sec data, 2 for 60 sec (1 min) data, 3 for 600 sec (10 min) data and 4 for 3600 sec (1 hr) data 
+This firmware has been designed to read different sensors, including some sensors which have two or more different parameters (such as temperature, humidity and pressure). To do this each parameter is stored on a 'channel'. The number of channels and data returned will depend upon the sensor type. For example the soil moisture and temperature sensor will use channel 00 for the moisture reading and channel 01 for the temperature.
+
+(Note: For the wind interface sensor is a special case the the wind speed and wind direction must be requested with the commands specified in the Sensor Specific Commands section).
+
+You can either read from one sensor parameter, as shown here, or get all sensor parameters returned in one call (as pre the request below 'Request Data from ALL sensor parameters').
+
+Request: “aaI0R00A*?^^#” where 00 is the sensor parameter (00, 01 etc) and * is the averaging period (* = 0 for 1 sec data, 1 for 10 sec data, 2 for 60 sec (1 min) data, 3 for 600 sec (10 min) data and 4 for 3600 sec (1 hr) data 
 
 Returns:  "aaI0R00A*:123.40:123.40:123.40?^^#"  // This wil return the average data then : then the minimum value then : then the maxximum value.
 
-## Request Data from ALL channels
+## Request Data from ALL sensor parameters
+
+This will return all the sensor parameter data for the averaging period requested. 
+
+(Note: For the wind interface sensor is a special case the the wind speed and wind direction must be requested with the commands specified in the Sensor Specific Commands section).
 
 Request: “aaI0RAAA3?^^#”
 
-Returns: "aaI0RAAA1:123.40:567.80?^^#" where the first item of data is channel 0, the next is channel 1. This will depend upon the number of channels.
+Returns: "aaI0RAAA1:123.40:567.80?^^#" where the first item of data is sensor parameter 00, the next is sensor parameter 01 etc. This will depend upon the number of sensor parameters.
 
 ## Request ALL Minimum data
 
 Request: “aaI0RMNA4?^^#”  - does not matter what averaging period. min/max are just the min/max seen at max data rate.
 
-Returns: "aaI0RMN:123.40:567.80?^^#"  where the first item of data is channel 0, the next is channel 1. This will depend upon the number of channels.
+Returns: "aaI0RMN:123.40:567.80?^^#"  where the first item of data is sensor parameter 00, the next is sensor parameter 01. This will depend upon the number of sensor parameters.
 
 ## Request ALL Maximum data
 
 Request: “aaI0RMXA0?^^#”  - does not matter what averaging period. min/max are just the min/max seen at max data rate.
 
-Returns: "aaI0RMX:123.40:567.80?^^#"  where the first item of data is channel 0, the next is channel 1. This will depend upon the number of channels.
+Returns: "aaI0RMX:123.40:567.80?^^#"  where the first item of data is sensor parameter 00, the next is sensor parameter 01. This will depend upon the number of sensor parameters.
 
 ## Reset the Min and Max value:
 
@@ -303,9 +311,9 @@ You can use this online calculator to check your CRC: https://crccalc.com/ The t
 
 ## Failure codes:
 
-If data is not that length or does not have 'aa' and '#' at start/end then return with send "aaFAIL\*\*#" error code. All will have CRC on these codes, if requested.
+If data is not the correct length, does not have a new line (NL) on the end or does not have 'aa' and '#' at start/end then return with send "aaFAIL\*\*#" error code. All will have CRC on these codes, if requested.
 
-+ "aaFAILCRC?^^#": CRC check fail
++  "aaFAILCRC?^^#": CRC check fail
 +  "aaFAILTL?^^#": String too long
 +  "aaFAILID?^^#": Problem with ID
 +  "aaFAILIDX?^^#": ID not correct to device
