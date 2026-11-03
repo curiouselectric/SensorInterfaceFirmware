@@ -95,7 +95,7 @@ There is one user switch (SWA), one reset switch (RST) and one user LED (LED0) o
 
 ### The reset switch
 
-The reset switch will do a full reset of the microcontroller. Any wind data (the 1s, 10s, 60s, 10min and 60min data) recorded will be lost. (The wind vane direction calibration and the wind speed sensor conversion data is stored in EEPROM and will not be lost).
+The reset switch will do a full reset of the microcontroller. Any wind data (the 1s, 10s, 60s, 10min and 60min data) recorded will be lost. (Note: Any calibration or conversion data is stored in EEPROM and will not be lost).
 
 ### The user LED
 
@@ -212,7 +212,7 @@ Request: "aaI*ID?^^#"  The * value can be anything.
 
 Returns: "aaIXID:X?^^#"   // Where X is the device ID + CRC if requested
 
-## Request Data from ONE sensor parameter (including max and min)
+## Request Data from ONE sensor parameter (including max and min):
 
 This firmware has been designed to read different sensors, including some sensors which have two or more different parameters (such as temperature, humidity and pressure). To do this each parameter is stored on a 'channel'. The number of channels and data returned will depend upon the sensor type. For example the soil moisture and temperature sensor will use channel 00 for the moisture reading and channel 01 for the temperature.
 
@@ -224,7 +224,7 @@ Request: “aaI0R00A*?^^#” where 00 is the sensor parameter (00, 01 etc) and *
 
 Returns:  "aaI0R00A*:123.40:123.40:123.40?^^#"  // This wil return the average data then : then the minimum value then : then the maxximum value.
 
-## Request Data from ALL sensor parameters (NOT including max and min)
+## Request Data from ALL sensor parameters (NOT including max and min):
 
 This will return all the sensor parameter data for the averaging period requested. 
 
@@ -234,13 +234,13 @@ Request: “aaI0RAAA3?^^#”
 
 Returns: "aaI0RAAA1:123.40:567.80?^^#" where the first item of data is sensor parameter 00, the next is sensor parameter 01 etc. This will depend upon the number of sensor parameters.
 
-## Request ALL Minimum data
+## Request ALL Minimum data:
 
 Request: “aaI0RMNA4?^^#”  - does not matter what averaging period. min/max are just the min/max seen at max data rate.
 
 Returns: "aaI0RMN:123.40:567.80?^^#"  where the first item of data is sensor parameter 00, the next is sensor parameter 01. This will depend upon the number of sensor parameters.
 
-## Request ALL Maximum data
+## Request ALL Maximum data:
 
 Request: “aaI0RMXA0?^^#”  - does not matter what averaging period. min/max are just the min/max seen at max data rate.
 
@@ -254,7 +254,7 @@ Request: "aaI0RESET?#" ("aaI0RESET?d9#" with CRC)
 
 Returns: "aaI0RSTOK#"
 
-## Request Temperature, Humidity and Pressure Data
+## Request Temperature, Humidity and Pressure Data:
 
 This command can only be used if the I2C AHT20/BMP280 sensor is attached and has been defined in the code. Otherwise it will return an error.
 
@@ -267,7 +267,7 @@ Request: "aaI0TEMP?^^#"  (^^ for the CRC)
 Returns: "aaI0T$$.$$H$$.$P$$$$$$?^^#" (^^ for the CRC) and $$$ are the values (floats) for Temeprature in C and Reltive Humidity in % and Air Pressure in Pa.
 Returns: "aaI0T-H-P-#" if the board is not connected or there is an issue wth one of the sensors.
 
-## Serial 'Button' press
+## Serial 'Button' press:
 
 You can simulate a button press with a serial command. This might be useful for some logging applications
 
