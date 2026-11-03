@@ -6,12 +6,15 @@
 // Define which sensor the unit is connected to.
 // Please see https://github.com/curiouselectric/RS485InterfaceBoard for list of options
 
-//#define SOIL_MOISTURE_SENSOR  // For the solar moisture sensor
-//#define PAR_SENSOR            // For the PAR (Photosynthetically Active Radiation) sensor
-//#define WIND_SENSOR       // For the Wind Speed and Vane sensor
+//#define SOIL_MOISTURE_SENSOR      // For the solar moisture sensor
+//#define PAR_SENSOR                // For the PAR (Photosynthetically Active Radiation) sensor
+//#define WIND_SENSOR               // For the Wind Speed and Vane sensor
 //#define SOLAR_IRRADIANCE_SENSOR   // For the DIY Solar Irradiance Sensor
-//#define SOLAR_RS485_SENSOR   // For the RS485 Solar Pyranometer
-#define PZEM_003_RS485_SENSOR   // For the Peacefair RS485 V/I/Power Sensor
+//#define SOLAR_RS485_SENSOR        // For the RS485 Solar Pyranometer (PYR-20)
+//#define PZEM_003_RS485_SENSOR     // For the Peacefair RS485 DC V/I/Power Sensor
+//#define PZEM_017_RS485_SENSOR       // For the Peacefair RS485 DC V/I/Power Sensor (external Current Sensor)
+#define PZEM_014_RS485_SENSOR     // For the Peacefair RS485 AC V/I/Power Sensor
+//#define PZEM_016_RS485_SENSOR     // For the Peacefair RS485 AC V/I/Power Sensor (external Current Sensor)
 
 
 // Hardware Definitions
@@ -113,14 +116,20 @@ const String FAIL_STRING = "aaFAIL";
 #define VANE_PIN A3
 #endif
 
-// Definitions for the DC power Sensor:
-#ifdef PZEM_003_RS485_SENSOR
-#include                  "pzem_003_rs485.h"
+// Definitions for the DC Power Sensor (PZEM-003 and PZEM-017 both work with this code):
+#if defined(PZEM_003_RS485_SENSOR) ||  defined(PZEM_017_RS485_SENSOR) ||  defined(PZEM_014_RS485_SENSOR ) ||  defined(PZEM_016_RS485_SENSOR)
+#include "pzem_rs485.h"
+#if defined(PZEM_003_RS485_SENSOR) ||  defined(PZEM_017_RS485_SENSOR)
 #define NUM_CHANNELS      4         // This will depends upon the sensor (0 = V, 1 = I, 2 = P, 3 = E)
 #define SENSOR_TYPE       "DC"      // DC Power
+#elif defined(PZEM_014_RS485_SENSOR ) ||  defined(PZEM_016_RS485_SENSOR)
+#define NUM_CHANNELS      6         // This will depends upon the sensor (0 = V, 1 = I, 2 = P, 3 = E, 4 = freq, 5 = PF)
+#define SENSOR_TYPE       "AC"      // AC Power
+#endif
+
 #define USE_RS485_POWER   true      // Use the step up converter - CHECK IT IS SET TO THE CORRECT VOLTAGE
 #define SENSOR_ID         1         // This is defined within the sensor itself
 #define POWER_SETTLE_TIME 350       // Time in mS to wait after power is applied before sending serial data and time to wait after data set before switching off power.
 #define DATA_READ_S       1         // When to read the data from this sensor (0 = 100mS, 1 = 1S, 2 = 10S, 3 = 60s, 4 = 600s, 5 = 3600s)  - Note: cannot use 100mS due to data delays
-//#define DEBUG_PZEM003               // This is for debug messages - comment out for noraml use
+//#define DEBUG_PZEM               // This is for debug messages - comment out for noraml use
 #endif

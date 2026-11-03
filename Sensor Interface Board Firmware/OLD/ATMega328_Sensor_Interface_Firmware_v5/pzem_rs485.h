@@ -1,4 +1,4 @@
-#ifdef PZEM_003_RS485_SENSOR
+#if defined(PZEM_003_RS485_SENSOR) ||  defined(PZEM_017_RS485_SENSOR) ||  defined(PZEM_014_RS485_SENSOR ) ||  defined(PZEM_016_RS485_SENSOR)
 
 /****************************************************************************/
 /***        Including Files                                               ***/
@@ -14,7 +14,7 @@
 /***        Class Definition                                              ***/
 /****************************************************************************/
 
-class pzem003Sensor {
+class pzemSensor {
 public:
   void begin();
   bool readVoltage(byte ID);  // Where ID is the ID of the unit (default 1, can be 1-255)
@@ -22,6 +22,12 @@ public:
   bool readPower(byte ID);    // Where ID is the ID of the unit (default 1, can be 1-255)
   bool readEnergy(byte ID);   // Where ID is the ID of the unit (default 1, can be 1-255)
   //bool readAll(byte ID);      // Where ID is the ID of the unit (default 1, can be 1-255)
+#if defined(PZEM_014_RS485_SENSOR ) ||  defined(PZEM_016_RS485_SENSOR)
+  // bool readFreq(byte ID);     // Where ID is the ID of the unit (default 1, can be 1-255)
+  // bool readPF(byte ID);       // Where ID is the ID of the unit (default 1, can be 1-255)
+#endif
+
+
   float dcVoltage;
   float dcCurrent;
   float dcPower;
@@ -34,6 +40,6 @@ private:
   bool getRequestData(char dataType);
   void createRequest(byte buf[], int len);
 };
-extern pzem003Sensor myPzem003Sensor;
+extern pzemSensor myPzemSensor;
 
 #endif
