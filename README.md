@@ -324,7 +324,7 @@ If data is not the correct length, does not have a new line (NL) on the end or d
 
 
 # Sensor Specific Commands
-For each sensor type there are additional commands. These are only available if the unit is in the correct mode.
+For each sensor type there are additional commands. These are only available for the relative sensor option has been defined in the config.h file of the firmwre. For example if the "#define WIND_SENSOR" has been set then this is for the Wind Speed and Vane sensor.
 They are listed here.
 
 ## 'SM' RS485 Soil Mositure Sensor
