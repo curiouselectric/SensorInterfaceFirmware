@@ -413,3 +413,8 @@ Voltage, Current, Power and cumulative Energy are monitored.
 
 
 
+# Release Notes
+
+Version   |Date    |Main Changes     | Notes
+-------|-------|-------|----
+1.9    |4/11/2026     | Updated code for wind interface sensor.     | Added LF/CR ability. Sorted issue with min/max values. Sorted issue with vane training mode crashing
