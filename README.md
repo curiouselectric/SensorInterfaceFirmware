@@ -387,19 +387,23 @@ Returns: "aaRESET#"
 
 ### Enter vane training mode:
 
-Request: "aaI0VT?#" ("aaI0VT?af#" with CRC) OR long press of the button (>1 second) will enter this mode.
+Request: "aaI0VT?#" ("aaI0VT?af#" with CRC) OR long press of the user button (SWA) ( > 1 second) will enter this mode.
 
 Returns: Enter the vane training routine - use button to go through the different directions and set the values.
 
-The serial port will show which direction the vane should be pointing at (it will say "aaI0SET TO: N#").
+When first entered the board will say "VTENTER", showing we have entered wind vane training mode. Press user switch (SWA) once more for a short press (around 0.5 seconds).
 
-Move the vane to this position and press the user switch (for around 0.5 seconds).
+There will be no other data shown on the serial port, as this is stopped for the duration of the training.
 
-The serial port will show then next direction and will go through: N, NE, E, SE, S, SW, W, NW and then end.
+The serial port will then show which direction the vane should be pointing at (it will say "aaI0SET:N#").
 
-The unit will also send "aaI0SET TO: N" + CRC +"#" to report back which direction the unit is now being trained.
+Move the vane to this position. Hold it there and press the user switch (SWA) for a short press (around 0.5 seconds).
 
-When it ends this data is stored within the unit and the direction 'bands' are recalculated.
+The serial port will show "aaI0SET:*#" to report the next direction, where * is the direction to point the wind vane and will go through: N, NE, E, SE, S, SW, W, NW and then end.
+
+When it ends the unit will broadcast "VTLEAVE" the vane conversion data is stored within the unit (in EEPROM) and the direction 'bands' are re-calculated.
+
+The wind direction given on the data returned should now align with the wind vane/correct compass directions. Double check this with all positions for the wind vane.
 
 ## 'DC' RS485 DC Power Sensor
 
