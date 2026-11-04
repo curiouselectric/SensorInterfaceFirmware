@@ -391,13 +391,13 @@ Request: "aaI0VT?#" ("aaI0VT?af#" with CRC) OR long press of the button (>1 seco
 
 Returns: Enter the vane training routine - use button to go through the different directions and set the values.
 
-The serial port will show which direction the vane should be pointing at.
+The serial port will show which direction the vane should be pointing at (it will say "aaI0SET TO: N#").
 
 Move the vane to this position and press the user switch (for around 0.5 seconds).
 
-The serial port will show then next direction and will got N, NE, E, SE, S, SW, W, NW and then end.
+The serial port will show then next direction and will go through: N, NE, E, SE, S, SW, W, NW and then end.
 
-The unit will also send "aaI0WVOK=NW" + CRC +"#" to report back which direction the unit is now being trained.
+The unit will also send "aaI0SET TO: N" + CRC +"#" to report back which direction the unit is now being trained.
 
 When it ends this data is stored within the unit and the direction 'bands' are recalculated.
 
