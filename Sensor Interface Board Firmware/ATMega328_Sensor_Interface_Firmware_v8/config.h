@@ -17,7 +17,7 @@
 //#define PZEM_016_RS485_SENSOR     // For the Peacefair RS485 AC V/I/Power Sensor (external Current Sensor)
 
 // Hardware Definitions
-#define SOFTWARE_VERSION "1.8"  // Defines which version of software - to control updates if needed
+#define SOFTWARE_VERSION "1.9"  // Defines which version of software - to control updates if needed
 
 // I2C Devices:
 //#define I2C_TEMP_HUMID  // set this if there is an I2C sensor attached for temperature and humidity (comment out if its not available)
@@ -54,7 +54,7 @@ const long int baud_rates[MAX_BAUD_RATES] = { 1200, 4800, 9600, 57600, 115200 };
 const String FAIL_STRING = "aaFAIL";
 
 // *******TO DO ************** Sort out Debug as a #ifdef  to save code space.
-// #define DEBUG_FLAG  // Use this for debugging. Not need for roll out.
+//#define DEBUG_FLAG    // Use this for debugging. Not need for roll out.
 
 // These three digital pins are for the Device ID selection:
 #define GPIO_ID0 A2  //  A0 Digital 4 on Arduino

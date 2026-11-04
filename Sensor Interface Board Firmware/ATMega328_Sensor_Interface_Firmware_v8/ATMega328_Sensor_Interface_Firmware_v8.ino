@@ -158,13 +158,16 @@ volatile int data_counter_10s = 0;
 volatile int data_counter_60s = 0;
 volatile int data_counter_600s = 0;
 volatile int data_counter_3600s = 0;
+int saved_sensor_mode;
 
 #ifdef WIND_SENSOR
 long int debounce_time = millis();
 // *********** This is for the pulse counter ***********************
 pulse_counter_ pulse_counter;
+
 // // *********** This is for the wind vane ***********************
 // wind_vane_array_ext    wind_vane_data;
+
 //****ISR Function for pulse counting for wind speed************
 void ISR_PULSE_0() {
   if (millis() > debounce_time + DEBOUNCE_DELAY) {
@@ -517,17 +520,20 @@ void tap(Button2& btn) {
 #ifdef WIND_SENSOR
       wind_vane_data.vane_training_mode = !wind_vane_data.vane_training_mode;
       if (wind_vane_data.vane_training_mode == true) {
+
+        saved_sensor_mode = checkData.send_sensor_data;
+        checkData.send_sensor_data = 5;  // Dont send any data on serial port (messes up things)
         Serial.println(F("VTENTER"));
         wind_vane_data.vane_training_direction = -1;  // So we are checking north first
+
       } else {
         Serial.println(F("VTLEAVE"));
       }
 #endif
     }
-
 #ifdef WIND_SENSOR
     // Check if we are in wind training mode?
-    if (wind_vane_data.vane_training_mode == true) {
+    else if (wind_vane_data.vane_training_mode == true) {
       // If this is the case then the button just goes through the different directions
       // Want to store the vane_direction value into EEPROM at the correct location:
       // We store the 1 second average here:
@@ -535,26 +541,28 @@ void tap(Button2& btn) {
       // Then increment the counter (next direction)
       wind_vane_data.vane_training_direction++;
       // ****** Start of button press for datalogger
-      // Need to give command saying button has been pressed (and which direction now in)
-      returnString = F("aaI");
-      returnString += (String)UNIT_ID;
-      returnString += F("WVOK=");
-      returnString += wind_vane_data.vane_directions[wind_vane_data.vane_training_direction];  // Print the instantaneous value of the wind vane as a direction
+
+      if (wind_vane_data.vane_training_direction < 8) {
+        // Need to give command saying button has been pressed (and which direction now in)
+        returnString = F("aaI");
+        returnString += (String)UNIT_ID;
+        returnString += F("SET:");
+        returnString += wind_vane_data.vane_directions[wind_vane_data.vane_training_direction];  // Print the instantaneous value of the wind vane as a direction
 #ifdef ADD_CRC_CHECK
-        // Add the CRC here: This adds the ? the CRC and the # to the end
-      returnString = add_CRC(returnString);
+          // Add the CRC here: This adds the ? the CRC and the # to the end
+        returnString = add_CRC(returnString);
 #else
-      returnString += F("#");
+        returnString += F("#");
 #endif
-
-      Serial.println(returnString);
-      Serial.println("");  // This is needed just to clear the serial buffer from noise.
-
+        Serial.println(returnString);
+      }
+      
       // ****** End of button press for datalogger
       if (wind_vane_data.vane_training_direction >= 8) {
         wind_vane_data.vane_training_direction = 0;
         wind_vane_data.vane_training_mode = false;
         // Need to figure out the bands again:
+
 #ifdef DEBUG_FLAG
         wind_vane_data.begin(true);
 #else
@@ -563,6 +571,7 @@ void tap(Button2& btn) {
         // Want to reset the wind vane direction data as previous will be wrong!
         wind_vane_data.reset_vane_direction_array();
         Serial.println(F("aaI0VTEND#"));
+        checkData.send_sensor_data = saved_sensor_mode;  // Go back to showing data as before enetring training mode)
       }
       checkData.button_press_flag = false;
     } else {
@@ -662,8 +671,6 @@ void setup() {
 
   // Set up the I2C sensor (using routine in Utilities)
   startI2Csensor();
-
-
 
   // Flash LEDs for test
   pinMode(LED0_PIN, OUTPUT);
@@ -803,16 +810,16 @@ void loop() {
   delay response. Multiple bytes of data may be available.
 */
 void serialEvent() {
-  if (Serial.available()>0) {
+  if (Serial.available() > 0) {
     // get the new byte:
     //char inChar = (char)Serial.read();
     inputString = Serial.readStringUntil('\n');
     // add it to the inputString:
     // inputString += inChar;
-    inputString.trim(); 
+    inputString.trim();
     // if the incoming character is a newline, set a flag so the main loop can
     // do something about it:
-    if (inputString.length()>0) {
+    if (inputString.length() > 0) {
       stringComplete = true;
     }
   }
